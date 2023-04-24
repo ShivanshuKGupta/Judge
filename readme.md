@@ -1,6 +1,6 @@
 # How to use?
 1. Clone the repo.
-2. Make a new folder and like the folder 'Lab2' which already exists.
+2. Make a new folder like the folder 'Lab2' which already exists.
 3. Make two new subfolders: submissions and sample_input
 4. Then finally run the main.py file.
 
