@@ -3,16 +3,21 @@ import sys
 
 import cppTools as cpp
 
+# Folder names
+submission_folder = 'submissions'
+input_files_folder = 'sample_input'
+# ------------------------------
+
 if (len(sys.argv) > 1):
     if (sys.argv[1] == '-h' or sys.argv[1] == '--help'):
+        with open('readme.md') as helpFile:
+            print(helpFile.readlines())
         print('Contact shivanshukgupta (linkedin/github) for help')
     exit(0)
 
 folder = input("Enter folder path:")
 os.chdir(f'{folder}')
 
-submission_folder = 'submissions'
-input_files_folder = 'sample_input'
 output_files_folder = 'saved_output'
 
 if (not os.path.exists(submission_folder)):
