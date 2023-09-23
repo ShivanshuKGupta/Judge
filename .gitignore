@@ -7,6 +7,8 @@
 !.gitignore
 !readme.md
 !clean.bat
+!install_judge.bat
+!judge.bat
 !/Plagi_Checker/DolosAPI/dolos.py
 !/Plagi_Checker/
 !/Plagi_Checker/DolosAPI/
