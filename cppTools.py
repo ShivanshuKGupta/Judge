@@ -41,11 +41,11 @@ class srcFile:
     def run(self):
         print(f"Running '{self.file_name}' for input '{self.input_file}'...")
         os.system(
-            f"./{self.folder}/{self.file_name_without_ext} <{self.input_file} >{self.output_file}")
+            f"{self.folder}\\{self.file_name_without_ext}.exe <{self.input_file} >{self.output_file}")
 
     def __del__(self):
         try:
-            os.system(f"rm {self.folder}/{self.file_name_without_ext}")
+            os.system(f"del {self.folder}\\{self.file_name_without_ext}.exe")
         except:
             print("Something went wrong while deleting the file")
 

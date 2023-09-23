@@ -9,11 +9,14 @@ input_files_folder = 'sample_input'
 # ------------------------------
 
 if (len(sys.argv) > 1):
-    if (sys.argv[1] == '-h' or sys.argv[1] == '--help'):
-        with open('readme.md') as helpFile:
-            print(helpFile.readlines())
-        print('Contact shivanshukgupta (linkedin/github) for help')
-    exit(0)
+    for arg in sys.argv:
+        if (arg == '-h' or arg == '--help'):
+            with open('readme.md') as helpFile:
+                print(helpFile.readlines())
+            print('Contact shivanshukgupta (linkedin/github) for help')
+            exit(0)
+        elif (arg == '--clean' or arg == '-c'):
+            os.system("clean.bat")
 
 folder = input("Enter folder path:")
 os.chdir(f'{folder}')
