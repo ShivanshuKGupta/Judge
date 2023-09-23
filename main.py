@@ -38,9 +38,11 @@ for each_input_file in os.listdir(input_files_folder):
 
 for each_submission in os.listdir(submission_folder):
     submission = cpp.srcFile(each_submission, submission_folder)
-    submission.compile()
-    for each_input_file in os.listdir(input_files_folder):
-        submission.setInputFile(f'{input_files_folder}/{each_input_file}')
-        submission.setOutputFile(
-            f"{output_files_folder}/{each_input_file[0:len(each_input_file)-4]}/{submission.file_name_without_ext}.txt")
-        submission.run()
+    if (submission.compile()):
+        for each_input_file in os.listdir(input_files_folder):
+            submission.setInputFile(f'{input_files_folder}/{each_input_file}')
+            submission.setOutputFile(
+                f"{output_files_folder}/{each_input_file[0:len(each_input_file)-4]}/{submission.file_name_without_ext}.txt")
+            submission.run()
+    else:
+        print(f'Skipping {each_submission}')

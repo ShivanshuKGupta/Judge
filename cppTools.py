@@ -3,7 +3,6 @@ import os
 
 def showErr(errMsg: str):
     print(errMsg)
-    exit(1)
 
 
 class srcFile:
@@ -12,9 +11,9 @@ class srcFile:
         self.file_name = _file_name
         self.ext = ""
         self.file_name_without_ext = self.file_name[0:len(self.file_name)-2]
-        if (self.file_name[len(self.file_name)-2:len(self.file_name)] == '.c'):
+        if (self.file_name[len(self.file_name)-2:len(self.file_name)].lower() == '.c'):
             self.ext = ".c"
-        elif (self.file_name[len(self.file_name)-4:len(self.file_name)] == '.cpp'):
+        elif (self.file_name[len(self.file_name)-4:len(self.file_name)].lower() == '.cpp'):
             self.file_name_without_ext = self.file_name[0:len(
                 self.file_name)-4]
             self.ext = ".cpp"
@@ -26,9 +25,12 @@ class srcFile:
         if (self.ext == '.c'):
             if (os.system(f"cd {self.folder} && gcc {self.file_name} -o {self.file_name_without_ext}") != 0):
                 showErr("C File Compilation Failed!")
+                return False
         elif (self.ext == '.cpp'):
             if (os.system(f"cd {self.folder} && g++ {self.file_name} -o {self.file_name_without_ext}") != 0):
                 showErr("C++ File Compilation Failed!")
+                return False
+        return True
 
     def setInputFile(self, input_file):
         self.input_file = input_file
@@ -42,7 +44,10 @@ class srcFile:
             f"./{self.folder}/{self.file_name_without_ext} <{self.input_file} >{self.output_file}")
 
     def __del__(self):
-        os.system(f"rm {self.folder}/{self.file_name_without_ext}")
+        try:
+            os.system(f"rm {self.folder}/{self.file_name_without_ext}")
+        except:
+            print("Something went wrong while deleting the file")
 
 
 def setFile(file_name: str, data: str):
