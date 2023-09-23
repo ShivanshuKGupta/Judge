@@ -1,8 +1,17 @@
 import os
 
 
+debug = False
+
+
 def showErr(errMsg: str):
     print(errMsg)
+
+
+def dbg(msg):
+    global debug
+    if debug:
+        print(msg)
 
 
 class srcFile:
@@ -18,10 +27,10 @@ class srcFile:
                 self.file_name)-4]
             self.ext = ".cpp"
         else:
-            showErr(f"Unknown file extension: {self.file_name}")
+            raise ValueError(f"Unknown file extension: {self.file_name}")
 
     def compile(self):
-        print(f"Compiling {self.file_name} file...")
+        dbg(f"Compiling {self.file_name} file...")
         if (self.ext == '.c'):
             if (os.system(f"cd {self.folder} && gcc {self.file_name} -o {self.file_name_without_ext}") != 0):
                 showErr("C File Compilation Failed!")
@@ -39,7 +48,7 @@ class srcFile:
         self.output_file = output_file
 
     def run(self):
-        print(f"Running '{self.file_name}' for input '{self.input_file}'...")
+        dbg(f"Running '{self.file_name}' for input '{self.input_file}'...")
         os.system(
             f"{self.folder}\\{self.file_name_without_ext}.exe <{self.input_file} >{self.output_file}")
 
@@ -47,10 +56,11 @@ class srcFile:
         try:
             os.system(f"del {self.folder}\\{self.file_name_without_ext}.exe")
         except:
-            print("Something went wrong while deleting the file")
+            dbg(
+                f"Something went wrong while deleting the file: {self.folder}\\{self.file_name_without_ext}.exe")
 
 
 def setFile(file_name: str, data: str):
     ip = open(file_name, 'w')
     ip.write(data)
-    print(f"Writing '{data}' in {file_name}")
+    dbg(f"Writing '{data}' in {file_name}")

@@ -7,3 +7,7 @@
 !.gitignore
 !readme.md
 !clean.bat
+!/Plagi_Checker/DolosAPI/dolos.py
+!/Plagi_Checker/
+!/Plagi_Checker/DolosAPI/
+!/Plagi_Checker/main.py
