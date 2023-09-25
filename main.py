@@ -42,7 +42,7 @@ def print_help():
     print("\t--clean, -c\t\tcleans the submissions directory of exe files")
     print("\t--no-clean, -nc\t\tdisables cleaning of the submissions directory from exe files")
     print("\t--no-plagi-check, -np\tdisables plagiarism report generation")
-    print("\t--no-check-output, -nco\tdisables output checking feature")
+    print("\t--no-output-check, -noc\tdisables output checking feature")
     print("\t--debug, -d\t\tenables debug prints")
     print("\t--plagi-check, -p\tenables plagiarism report generation")
     # print("\nREADME:")
@@ -70,7 +70,7 @@ for arg in sys.argv[1:]:
         cpp.debug = True
     elif (arg == '--plagi-check' or arg == '-p'):
         plagi_check = True
-    elif (arg == '--no-check-output' or arg == '-nco'):
+    elif (arg == '--no-output-check' or arg == '-noc'):
         no_checking_output = True
     elif (arg == '--no-plagi-check' or arg == '-np'):
         plagi_check = False
