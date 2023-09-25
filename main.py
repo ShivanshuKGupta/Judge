@@ -6,9 +6,11 @@ import cppTools as cpp
 # Folder names
 submission_folder = 'submissions'
 input_files_folder = 'sample_input'
-output_files_folder = 'saved_output'
+saved_output_files_folder = 'saved_output'
+output_files_folder = 'sample_output'
 plagi_check = True
 cpp.debug = False
+no_checking_output = False
 # ------------------------------
 
 file_dir = os.path.dirname(os.path.abspath(__file__))
@@ -40,6 +42,7 @@ def print_help():
     print("\t--clean, -c\t\tcleans the submissions directory of exe files")
     print("\t--no-clean, -nc\t\tdisables cleaning of the submissions directory from exe files")
     print("\t--no-plagi-check, -np\tdisables plagiarism report generation")
+    print("\t--no-check-output, -nco\tdisables output checking feature")
     print("\t--debug, -d\t\tenables debug prints")
     print("\t--plagi-check, -p\tenables plagiarism report generation")
     # print("\nREADME:")
@@ -67,6 +70,8 @@ for arg in sys.argv[1:]:
         cpp.debug = True
     elif (arg == '--plagi-check' or arg == '-p'):
         plagi_check = True
+    elif (arg == '--no-check-output' or arg == '-nco'):
+        no_checking_output = True
     elif (arg == '--no-plagi-check' or arg == '-np'):
         plagi_check = False
     elif (arg == '.'):
@@ -87,36 +92,56 @@ os.chdir(f'{folder}')
 if (not os.path.exists(submission_folder)):
     show_fatal_err('Submissions folder not found')
 
-if (not os.path.exists(input_files_folder)):
+if (not os.path.exists(input_files_folder) and not no_checking_output):
     show_fatal_err('Input folder not found')
 
-if (not os.path.exists(output_files_folder)):
-    os.mkdir(f"{output_files_folder}")
-
-for each_input_file in os.listdir(input_files_folder):
-    newFolder = f"{output_files_folder}/{each_input_file[0:len(each_input_file)-4]}"
-    if (not os.path.exists(newFolder)):
-        os.mkdir(newFolder)
+if (not os.path.exists(output_files_folder) and not no_checking_output):
+    show_fatal_err(
+        'Output files aren\'t found. Continuing without output files')
 
 print(f"Running judge on {folder}...")
 if (cpp.debug == False):
     print("Debug messages are disabled. Run judge with -d flag to enable debug messages.")
 
-for each_submission in os.listdir(submission_folder):
-    try:
-        submission = cpp.srcFile(each_submission, submission_folder)
-    except ValueError as err:
-        cpp.showErr(err)
-        print(f'Skipping {each_submission}')
-        continue
-    if (submission.compile()):
-        for each_input_file in os.listdir(input_files_folder):
-            submission.setInputFile(f'{input_files_folder}/{each_input_file}')
-            submission.setOutputFile(
-                f"{output_files_folder}/{each_input_file[0:len(each_input_file)-4]}/{submission.file_name_without_ext}.txt")
-            submission.run()
-    else:
-        print(f'Skipping {each_submission}')
+if not no_checking_output:
+    if (not os.path.exists(saved_output_files_folder)):
+        os.mkdir(f"{saved_output_files_folder}")
+
+    for each_input_file in os.listdir(input_files_folder):
+        newFolder = f"{saved_output_files_folder}/{each_input_file[0:len(each_input_file)-4]}"
+        if (not os.path.exists(newFolder)):
+            os.mkdir(newFolder)
+
+    output_matching: list[list[bool]] = []
+    input_files: list[str] = []
+
+    i = -1
+    for each_submission in os.listdir(submission_folder):
+        try:
+            submission = cpp.srcFile(each_submission, submission_folder)
+        except ValueError as err:
+            cpp.showErr(err)
+            print(f'Skipping {each_submission}')
+            continue
+        i += 1
+        output_matching.append([])
+        input_files += [each_submission]
+        if (submission.compile()):
+            for each_input_file in os.listdir(input_files_folder):
+                ip_file = f'{input_files_folder}/{each_input_file}'
+                submission.setInputFile(ip_file)
+                op_file = f"{saved_output_files_folder}/{each_input_file[0:len(each_input_file)-4]}/{submission.file_name_without_ext}.txt"
+                submission.setOutputFile(op_file)
+                submission.run()
+                correct_op_file = f"{output_files_folder}/{each_input_file[0:len(each_input_file)-4]}.txt"
+                output_matching[i] += [
+                    submission.check_against(correct_op_file)]
+        else:
+            print(f'Skipping {each_submission}')
+
+    cpp.dbg(f"{output_matching=}")
+    cpp.dbg(f"{input_files=}")
+    # TODO: Make copies based on input files and whether they matched output or not
 
 clean(dir=submission_folder)
 if (plagi_check):

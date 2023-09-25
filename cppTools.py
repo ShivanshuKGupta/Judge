@@ -59,6 +59,11 @@ class srcFile:
             dbg(
                 f"Something went wrong while deleting the file: {self.folder}\\{self.file_name_without_ext}.exe")
 
+    def check_against(self, correct_output_file_path: str) -> bool:
+        output_generated = open(self.output_file, "r").read()
+        correct_output = open(correct_output_file_path, "r").read()
+        return output_generated == correct_output
+
 
 def setFile(file_name: str, data: str):
     ip = open(file_name, 'w')

@@ -35,18 +35,20 @@ os.chdir(path)
 
 with open("inputFiles.csv", "w") as file:
     file.write("filename"+'\n')
-    for each_input_file in os.listdir(path):
+    for each_input_file in [item for item in os.listdir(path) if os.path.isfile(os.path.join(path, item))]:
         if (not each_input_file.endswith('.csv')):
-            file.write(path + "\\"+each_input_file+'\n')
+            file.write(each_input_file+'\n')
+
+os.chdir("..")
 
 dolos.output_format = "web"
 dolos.port = "8080"
 dolos.output_destination = f"Dolos_Reports"
-dolos.path = f"inputFiles.csv"
+dolos.path = f"{path}\\inputFiles.csv"
 dolos.language = "cpp"
 dolos.min_similarity = 0.5
 dolos.sort_by = "similarity"
-print(f"See generated report here: {path}\\Dolos_Reports\\pairs.csv")
+print(f"See generated report here: {os.getcwd()}\\Dolos_Reports")
 try:
     errCode = dolos.run()
     if (errCode != 0):
