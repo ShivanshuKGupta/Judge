@@ -20,7 +20,7 @@ file_dir = os.path.dirname(os.path.abspath(__file__))
 
 def clean():
     cpp.dbg(f"Cleaning dir: {os.getcwd()}")
-    os.system(f"{file_dir}/clean.bat")
+    os.system(f"{file_dir}/clean.bat >nul 2>&1")
 
 
 def print_help():
