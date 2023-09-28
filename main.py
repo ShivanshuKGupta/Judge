@@ -1,7 +1,11 @@
+# TODO: create files which will serve the functions of output matching, mapping of files to roll numbers, and question numbers.
+
 import os
 import sys
+import csv
 
 import cppTools as cpp
+from possible_status import *
 
 # Default Values
 submission_folder: str = 'submissions'
@@ -38,8 +42,8 @@ def print_help():
     print("Possible options:")
     print("\t--help, -h\t\tshow help")
     print("\t-t\t\t\tset timeout in seconds (can be a fractional value)")
-    print("\t\t\t\tsyntax: -t\"<seconds>\"")
-    print("\t\t\t\texample: using -t\"10.5\" gives a timeout of 10.5 seconds")
+    print("\t\t\t\tsyntax: -t=\"seconds\"")
+    print("\t\t\t\texample: using -t=\"10.5\" gives a timeout of 10.5 seconds")
     print("\t--clean, -c\t\tcleans the submissions directory of exe & judge files")
     print("\t--no-clean, -nc\t\tdisables cleaning")
     print("\t--no-plagi-check, -np\tdisables plagiarism report generation")
@@ -78,8 +82,8 @@ for arg in sys.argv[1:]:
         plagi_check = False
     elif (arg == '.'):
         folder = os.getcwd()
-    elif (arg.startswith("-t")):
-        timeout_seconds = float(arg[2:])
+    elif (arg.startswith("-t=")):
+        timeout_seconds = float(arg[3:])
         cpp.dbg(f"Setting timeout to {timeout_seconds} seconds")
     else:
         if arg.startswith('-'):
@@ -122,8 +126,7 @@ if not no_checking_output:
         if (not os.path.exists(newFolder)):
             os.mkdir(newFolder)
 
-    output_matching: list[list[bool]] = []
-    input_files: list[str] = []
+    output_matching: list[dict[str, str]] = []
 
     i = -1
     for each_submission in os.listdir(submission_folder):
@@ -134,27 +137,42 @@ if not no_checking_output:
             print(f'Skipping {each_submission}')
             continue
         i += 1
-        output_matching.append([])
-        input_files += [each_submission]
+        output_matching.append({
+            'file_name': each_submission,
+            'status': possible_status.Unknown
+        })
         if (submission.compile()):
             for each_input_file in os.listdir(input_files_folder):
                 ip_file = f'{input_files_folder}/{each_input_file}'
                 submission.setInputFile(ip_file)
                 op_file = f"{saved_output_files_folder}/{each_input_file[0:len(each_input_file)-4]}/{submission.file_name_without_ext}.txt"
                 submission.setOutputFile(op_file)
-                # try:
-                submission.run(timeout_seconds=timeout_seconds)
-                # except:
-                #     print("Runtime error.")
-                #     continue
-                correct_op_file = f"{output_files_folder}/{each_input_file[0:len(each_input_file)-4]}.txt"
-                output_matching[i] += [
-                    submission.check_against(correct_op_file)]
+                try:
+                    if (not submission.run(timeout_seconds=timeout_seconds)):
+                        output_matching[i]['status'] = possible_status.Time_Limit_Exceeded
+                        continue
+                except:
+                    output_matching[i]['status'] = possible_status.RunTime_Error
+                    print(
+                        f"Runtime error occured when running {each_submission} against {each_input_file}.")
+                    continue
+                correct_op_file = f"{output_files_folder}/{each_input_file}"
+                output_matching[i]['status'] = possible_status.Correct if submission.check_against(
+                    correct_op_file) else possible_status.Wrong
         else:
+            output_matching[i]['status'] = possible_status.Compile_Error
             print(f'Skipping {each_submission}')
+            continue
 
     cpp.dbg(f"{output_matching=}")
-    cpp.dbg(f"{input_files=}")
+    csv_filename = 'submission_status.csv'
+    with open(csv_filename, 'w', newline='') as csvfile:
+        fieldnames = ['file_name', 'status']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(output_matching)
+    print(f'Data has been written to {csv_filename}')
+
     # TODO: Make copies based on input files and whether they matched output or not
 
 os.chdir(f'..')

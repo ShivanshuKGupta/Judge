@@ -3,6 +3,7 @@
 # What to include?
 !cppTools.py
 !main.py
+!possible_status.py
 !.vscode
 !.gitignore
 !readme.md
