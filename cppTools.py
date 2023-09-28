@@ -1,4 +1,6 @@
 import os
+import subprocess
+from timeout_decorator import timeout
 
 
 debug = False
@@ -32,11 +34,11 @@ class srcFile:
     def compile(self):
         dbg(f"Compiling {self.file_name} file...")
         if (self.ext == '.c'):
-            if (os.system(f"cd {self.folder} && gcc {self.file_name} -o {self.file_name_without_ext}") != 0):
+            if (os.system(f"cd \"{self.folder}\" && gcc \"{self.file_name}\" -o \"{self.file_name_without_ext}\"") != 0):
                 showErr("C File Compilation Failed!")
                 return False
         elif (self.ext == '.cpp'):
-            if (os.system(f"cd {self.folder} && g++ {self.file_name} -o {self.file_name_without_ext}") != 0):
+            if (os.system(f"cd \"{self.folder}\" && g++ \"{self.file_name}\" -o \"{self.file_name_without_ext}\"") != 0):
                 showErr("C++ File Compilation Failed!")
                 return False
         return True
@@ -47,10 +49,16 @@ class srcFile:
     def setOutputFile(self, output_file):
         self.output_file = output_file
 
-    def run(self):
+    def run(self, timeout_seconds: float = 1):
         dbg(f"Running '{self.file_name}' for input '{self.input_file}'...")
-        os.system(
-            f"{self.folder}\\{self.file_name_without_ext}.exe <{self.input_file} >{self.output_file}")
+        try:
+            subprocess.run(
+                # "<{self.input_file}", ">{self.output_file}",
+                f"{self.folder}\\{self.file_name_without_ext}.exe",
+                check=True, shell=False, capture_output=True, timeout=timeout_seconds)
+        except subprocess.TimeoutExpired:
+            print(
+                f"{self.file_name_without_ext}.exe exceeded the time limit of {timeout_seconds} seconds and was terminated.")
 
     def __del__(self):
         try:
@@ -60,7 +68,11 @@ class srcFile:
                 f"Something went wrong while deleting the file: {self.folder}\\{self.file_name_without_ext}.exe")
 
     def check_against(self, correct_output_file_path: str) -> bool:
-        output_generated = open(self.output_file, "r").read()
+        try:
+            output_generated = open(self.output_file, "r").read()
+        except:
+            showErr(f"Cannot open file {self.output_file} with read access.")
+            return None
         correct_output = open(correct_output_file_path, "r").read()
         return output_generated == correct_output
 

@@ -3,7 +3,7 @@ import sys
 
 import cppTools as cpp
 
-# Folder names
+# Default Values
 submission_folder = 'submissions'
 input_files_folder = 'sample_input'
 saved_output_files_folder = 'saved_output'
@@ -11,17 +11,14 @@ output_files_folder = 'sample_output'
 plagi_check = True
 cpp.debug = False
 no_checking_output = False
+clean_enabled = True
 # ------------------------------
 
 file_dir = os.path.dirname(os.path.abspath(__file__))
 
 
-def clean(dir=None):
-    if dir is None:
-        dir = f"{folder}/{submission_folder}"
-    cpp.dbg(f"Current dir: {os.getcwd()}")
-    cpp.dbg(f"Changing dir to: {dir}")
-    os.chdir(f"{dir}")
+def clean():
+    cpp.dbg(f"Cleaning dir: {os.getcwd()}")
     os.system(f"{file_dir}/clean.bat")
 
 
@@ -39,8 +36,8 @@ def print_help():
 
     print("Possible options:")
     print("\t--help, -h\t\tshow help")
-    print("\t--clean, -c\t\tcleans the submissions directory of exe files")
-    print("\t--no-clean, -nc\t\tdisables cleaning of the submissions directory from exe files")
+    print("\t--clean, -c\t\tcleans the submissions directory of exe & judge files")
+    print("\t--no-clean, -nc\t\tdisables cleaning")
     print("\t--no-plagi-check, -np\tdisables plagiarism report generation")
     print("\t--no-output-check, -noc\tdisables output checking feature")
     print("\t--debug, -d\t\tenables debug prints")
@@ -64,8 +61,9 @@ for arg in sys.argv[1:]:
         exit(0)
     elif (arg == '--clean' or arg == '-c'):
         clean()
+        exit(0)
     elif (arg == '--no-clean' or arg == '-nc'):
-        pass
+        clean_enabled = False
     elif (arg == '--debug' or arg == '-d'):
         cpp.debug = True
     elif (arg == '--plagi-check' or arg == '-p'):
@@ -85,7 +83,10 @@ for arg in sys.argv[1:]:
             folder = arg
 
 if (len(folder) == 0):
-    folder = input("Enter folder path:")
+    folder = input(f"Enter folder path [default={os.getcwd()}]:")
+
+if (len(folder.strip()) == 0):
+    folder = os.getcwd()
 
 os.chdir(f'{folder}')
 
@@ -96,7 +97,7 @@ if (not os.path.exists(input_files_folder) and not no_checking_output):
     show_fatal_err('Input folder not found')
 
 if (not os.path.exists(output_files_folder) and not no_checking_output):
-    show_fatal_err(
+    print(
         'Output files aren\'t found. Continuing without output files')
 
 print(f"Running judge on {folder}...")
@@ -132,7 +133,11 @@ if not no_checking_output:
                 submission.setInputFile(ip_file)
                 op_file = f"{saved_output_files_folder}/{each_input_file[0:len(each_input_file)-4]}/{submission.file_name_without_ext}.txt"
                 submission.setOutputFile(op_file)
+                # try:
                 submission.run()
+                # except:
+                #     print("Runtime error.")
+                #     continue
                 correct_op_file = f"{output_files_folder}/{each_input_file[0:len(each_input_file)-4]}.txt"
                 output_matching[i] += [
                     submission.check_against(correct_op_file)]
@@ -143,8 +148,10 @@ if not no_checking_output:
     cpp.dbg(f"{input_files=}")
     # TODO: Make copies based on input files and whether they matched output or not
 
-clean(dir=submission_folder)
+os.chdir(f'..')
 if (plagi_check):
+    if (clean_enabled):
+        clean()
     cpp.dbg("Checking Plagiarism...")
     os.system(
-        f"python {file_dir}/Plagi_Checker/main.py")
+        f"python {file_dir}/Plagi_Checker/main.py {folder}/{submission_folder}")
