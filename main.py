@@ -37,9 +37,9 @@ def print_help():
 
     print("Possible options:")
     print("\t--help, -h\t\tshow help")
-    print("\t-t\t\tset timeout in seconds (can be a fractional value)")
-    print("\t\t\tsyntax: -t\"<seconds>\"")
-    print("\t\t\texample: using '-t\"10.5\"' gives a timeout of 10.5 seconds")
+    print("\t-t\t\t\tset timeout in seconds (can be a fractional value)")
+    print("\t\t\t\tsyntax: -t\"<seconds>\"")
+    print("\t\t\t\texample: using -t\"10.5\" gives a timeout of 10.5 seconds")
     print("\t--clean, -c\t\tcleans the submissions directory of exe & judge files")
     print("\t--no-clean, -nc\t\tdisables cleaning")
     print("\t--no-plagi-check, -np\tdisables plagiarism report generation")

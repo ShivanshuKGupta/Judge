@@ -38,9 +38,13 @@ Defaults:
 
 Possible options:
         --help, -h              show help
-        --clean, -c             cleans the submissions directory of exe files
-        --no-clean, -nc         disables cleaning of the submissions directory from exe files
+        -t                      set timeout in seconds (can be a fractional value)
+                                syntax: -t"<seconds>"
+                                example: using '-t"10.5"' gives a timeout of 10.5 seconds
+        --clean, -c             cleans the submissions directory of exe & judge files
+        --no-clean, -nc         disables cleaning
         --no-plagi-check, -np   disables plagiarism report generation
+        --no-output-check, -noc disables output checking feature
         --debug, -d             enables debug prints
         --plagi-check, -p       enables plagiarism report generation
 ```
