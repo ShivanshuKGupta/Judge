@@ -100,6 +100,8 @@ if (not os.path.exists(output_files_folder) and not no_checking_output):
     print(
         'Output files aren\'t found. Continuing without output files')
 
+if (clean_enabled):
+    clean()
 print(f"Running judge on {folder}...")
 if (cpp.debug == False):
     print("Debug messages are disabled. Run judge with -d flag to enable debug messages.")

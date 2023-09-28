@@ -49,13 +49,16 @@ class srcFile:
     def setOutputFile(self, output_file):
         self.output_file = output_file
 
-    def run(self, timeout_seconds: float = 1):
-        dbg(f"Running '{self.file_name}' for input '{self.input_file}'...")
+    def run(self, timeout_seconds: float = 10):
+        dbg(f"Running '{self.file_name_without_ext}' for input '{self.input_file}'...")
         try:
+            output_file = open(self.output_file, "wb")
+            input_file = open(self.input_file, 'r')
             subprocess.run(
-                # "<{self.input_file}", ">{self.output_file}",
                 f"{self.folder}\\{self.file_name_without_ext}.exe",
-                check=True, shell=False, capture_output=True, timeout=timeout_seconds)
+                stdin=input_file,
+                stdout=output_file,
+                check=True, shell=False)
         except subprocess.TimeoutExpired:
             print(
                 f"{self.file_name_without_ext}.exe exceeded the time limit of {timeout_seconds} seconds and was terminated.")
