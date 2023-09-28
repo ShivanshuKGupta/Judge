@@ -143,7 +143,7 @@ if not no_checking_output:
                 op_file = f"{saved_output_files_folder}/{each_input_file[0:len(each_input_file)-4]}/{submission.file_name_without_ext}.txt"
                 submission.setOutputFile(op_file)
                 # try:
-                submission.run()
+                submission.run(timeout_seconds=timeout_seconds)
                 # except:
                 #     print("Runtime error.")
                 #     continue

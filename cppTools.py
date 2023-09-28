@@ -58,7 +58,7 @@ class srcFile:
                 f"{self.folder}\\{self.file_name_without_ext}.exe",
                 stdin=input_file,
                 stdout=output_file,
-                check=True, shell=False)
+                check=True, shell=False, timeout=timeout_seconds)
         except subprocess.TimeoutExpired:
             print(
                 f"{self.file_name_without_ext}.exe exceeded the time limit of {timeout_seconds} seconds and was terminated.")
