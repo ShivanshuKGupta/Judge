@@ -4,14 +4,15 @@ import sys
 import cppTools as cpp
 
 # Default Values
-submission_folder = 'submissions'
-input_files_folder = 'sample_input'
-saved_output_files_folder = 'saved_output'
-output_files_folder = 'sample_output'
-plagi_check = True
+submission_folder: str = 'submissions'
+input_files_folder: str = 'sample_input'
+saved_output_files_folder: str = 'saved_output'
+output_files_folder: str = 'sample_output'
+plagi_check: bool = True
 cpp.debug = False
-no_checking_output = False
-clean_enabled = True
+no_checking_output: bool = False
+clean_enabled: bool = True
+timeout_seconds: float = 10.0
 # ------------------------------
 
 file_dir = os.path.dirname(os.path.abspath(__file__))
@@ -36,6 +37,9 @@ def print_help():
 
     print("Possible options:")
     print("\t--help, -h\t\tshow help")
+    print("\t-t\t\tset timeout in seconds (can be a fractional value)")
+    print("\t\t\tsyntax: -t\"<seconds>\"")
+    print("\t\t\texample: using '-t\"10.5\"' gives a timeout of 10.5 seconds")
     print("\t--clean, -c\t\tcleans the submissions directory of exe & judge files")
     print("\t--no-clean, -nc\t\tdisables cleaning")
     print("\t--no-plagi-check, -np\tdisables plagiarism report generation")
@@ -74,6 +78,9 @@ for arg in sys.argv[1:]:
         plagi_check = False
     elif (arg == '.'):
         folder = os.getcwd()
+    elif (arg.startswith("-t")):
+        timeout_seconds = float(arg[2:])
+        cpp.dbg(f"Setting timeout to {timeout_seconds} seconds")
     else:
         if arg.startswith('-'):
             print(f"argument \'{arg}\' is not a valid option")
