@@ -84,11 +84,15 @@ class srcFile:
         str2 = str2.replace('\n', '').split(' ')
         i = 0
         j = 0
-        while (i < len(str1) and j < len(str2)):
-            while (len(str1[i]) == 0):
+        n = len(str1)
+        m = len(str2)
+        while (i < n and j < m):
+            while (i < n and len(str1[i]) == 0):
                 i += 1
-            while (len(str2[j]) == 0):
+            while (j < m and len(str2[j]) == 0):
                 j += 1
+            if ((n-i) ^ (m-j)):
+                return False
             if (str1[i] != str2[j]):
                 return False
             i += 1
