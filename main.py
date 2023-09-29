@@ -171,7 +171,7 @@ if not no_checking_output:
             continue
 
     cpp.dbg(f"{output_matching=}")
-    csv_filename = folder+'submission_status.csv'
+    csv_filename = folder+'/submission_status.csv'
     console.print(f"Saving submissions to '{csv_filename}'")
     with open(csv_filename, 'w', newline='') as csvfile:
         fieldnames = ['file_name', 'status']
