@@ -142,7 +142,6 @@ if not no_checking_output:
         i += 1
         output_matching.append({
             'file_name': each_submission,
-            'status': possible_status.Unknown
         })
         console.print(f"Compiling file {each_submission}")
         if (submission.compile()):
@@ -155,18 +154,18 @@ if not no_checking_output:
                     console.print(
                         f"Running program {each_submission} against {each_input_file}")
                     if (not submission.run(timeout_seconds=timeout_seconds)):
-                        output_matching[i]['status'] = possible_status.Time_Limit_Exceeded
+                        output_matching[i][each_input_file] = possible_status.Time_Limit_Exceeded
                         continue
                 except:
-                    output_matching[i]['status'] = possible_status.RunTime_Error
+                    output_matching[i][each_input_file] = possible_status.RunTime_Error
                     print(
                         f"Runtime Error")
                     continue
                 correct_op_file = f"{output_files_folder}/{each_input_file}"
-                output_matching[i]['status'] = possible_status.Correct if submission.check_against(
+                output_matching[i][each_input_file] = possible_status.Correct if submission.check_against(
                     correct_op_file) else possible_status.Wrong
         else:
-            output_matching[i]['status'] = possible_status.Compile_Error
+            output_matching[i][each_input_file] = possible_status.Compile_Error
             cpp.dbg(f'Skipping {each_submission}')
             continue
 
@@ -174,7 +173,8 @@ if not no_checking_output:
     csv_filename = folder+'/submission_status.csv'
     console.print(f"Saving submissions to '{csv_filename}'")
     with open(csv_filename, 'w', newline='') as csvfile:
-        fieldnames = ['file_name', 'status']
+        fieldnames = ['file_name']
+        fieldnames += os.listdir(f"{folder}/{input_files_folder}")
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(output_matching)
