@@ -35,11 +35,11 @@ class srcFile:
         dbg(f"Compiling {self.file_name} file...")
         try:
             if (self.ext == '.c'):
-                if (os.system(f"cd \"{self.folder}\" && gcc \"{self.file_name}\" -o \"{self.file_name_without_ext}\"") != 0):
+                if (os.system(f"cd \"{self.folder}\" && gcc \"{self.file_name}\" -o \"{self.file_name_without_ext}\" >nul 2>&1") != 0):
                     showErr("C File Compilation Failed!")
                     return False
             elif (self.ext == '.cpp'):
-                if (os.system(f"cd \"{self.folder}\" && g++ \"{self.file_name}\" -o \"{self.file_name_without_ext}\"") != 0):
+                if (os.system(f"cd \"{self.folder}\" && g++ \"{self.file_name}\" -o \"{self.file_name_without_ext}\" >nul 2>&1") != 0):
                     showErr("C++ File Compilation Failed!")
                     return False
             return True
@@ -64,16 +64,19 @@ class srcFile:
                 check=True, shell=False, timeout=timeout_seconds)
         except subprocess.TimeoutExpired:
             print(
-                f"{self.file_name_without_ext}.exe exceeded the time limit of {timeout_seconds} seconds and was terminated.")
+                f"Exceeded time limit of {timeout_seconds} seconds")
             return False
         return True
 
     def __del__(self):
-        try:
-            os.system(f"del {self.folder}\\{self.file_name_without_ext}.exe")
-        except:
-            dbg(
-                f"Something went wrong while deleting the file: {self.folder}\\{self.file_name_without_ext}.exe")
+        file = f"{self.folder}\\{self.file_name_without_ext}.exe"
+        if os.path.isfile(file):
+            try:
+                os.system(
+                    f"del /q {file}")
+            except:
+                dbg(
+                    f"Something went wrong while deleting the file: {self.folder}\\{self.file_name_without_ext}.exe")
 
     @classmethod
     def compare_outputs(cls, str1: str, str2: str) -> bool:

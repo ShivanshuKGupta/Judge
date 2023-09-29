@@ -6,6 +6,7 @@ import csv
 
 import cppTools as cpp
 from possible_status import *
+from console import console
 
 # Default Values
 submission_folder: str = 'submissions'
@@ -99,7 +100,8 @@ if (len(folder) == 0):
 if (len(folder.strip()) == 0):
     folder = os.getcwd()
 
-os.chdir(f'{folder}')
+os.chdir(folder)
+folder = os.getcwd()
 
 if (not os.path.exists(submission_folder)):
     show_fatal_err('Submissions folder not found')
@@ -130,17 +132,19 @@ if not no_checking_output:
 
     i = -1
     for each_submission in os.listdir(submission_folder):
+        console.print(f"Detecting file: {each_submission}")
         try:
             submission = cpp.srcFile(each_submission, submission_folder)
         except ValueError as err:
             cpp.showErr(err)
-            print(f'Skipping {each_submission}')
+            cpp.dbg(f'Skipping {each_submission}')
             continue
         i += 1
         output_matching.append({
             'file_name': each_submission,
             'status': possible_status.Unknown
         })
+        console.print(f"Compiling file {each_submission}")
         if (submission.compile()):
             for each_input_file in os.listdir(input_files_folder):
                 ip_file = f'{input_files_folder}/{each_input_file}'
@@ -148,35 +152,38 @@ if not no_checking_output:
                 op_file = f"{saved_output_files_folder}/{each_input_file[0:len(each_input_file)-4]}/{submission.file_name_without_ext}.txt"
                 submission.setOutputFile(op_file)
                 try:
+                    console.print(
+                        f"Running program {each_submission} against {each_input_file}")
                     if (not submission.run(timeout_seconds=timeout_seconds)):
                         output_matching[i]['status'] = possible_status.Time_Limit_Exceeded
                         continue
                 except:
                     output_matching[i]['status'] = possible_status.RunTime_Error
                     print(
-                        f"Runtime error occured when running {each_submission} against {each_input_file}.")
+                        f"Runtime Error")
                     continue
                 correct_op_file = f"{output_files_folder}/{each_input_file}"
                 output_matching[i]['status'] = possible_status.Correct if submission.check_against(
                     correct_op_file) else possible_status.Wrong
         else:
             output_matching[i]['status'] = possible_status.Compile_Error
-            print(f'Skipping {each_submission}')
+            cpp.dbg(f'Skipping {each_submission}')
             continue
 
     cpp.dbg(f"{output_matching=}")
-    csv_filename = 'submission_status.csv'
+    csv_filename = folder+'submission_status.csv'
+    console.print(f"Saving submissions to '{csv_filename}'")
     with open(csv_filename, 'w', newline='') as csvfile:
         fieldnames = ['file_name', 'status']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(output_matching)
-    print(f'Data has been written to {csv_filename}')
+    print(f'Successful')
 
     # TODO: Make copies based on input files and whether they matched output or not
 
-os.chdir(f'..')
 if (plagi_check):
+    os.chdir(folder)
     if (clean_enabled):
         clean()
     cpp.dbg("Checking Plagiarism...")
