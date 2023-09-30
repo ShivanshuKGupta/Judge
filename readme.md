@@ -4,7 +4,7 @@ A code checker with a plagiarism detector. Currently, it only supports c and cpp
 
 ## Pre-requisites
 
-1. gcc/g++, python and npm
+1. gcc/g++, python and npm(to enable plagiarism check [optional])
 
 ## Installation
 
