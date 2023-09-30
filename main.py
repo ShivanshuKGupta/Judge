@@ -120,10 +120,15 @@ if (cpp.debug == False):
     print("Debug messages are disabled. Run judge with -d flag to enable debug messages.")
 
 if not no_checking_output:
+    input_files = os.listdir(input_files_folder)
+    if (len(input_files) == 0):
+        show_fatal_err(
+            f"No input files were found. To create input files create a new text file in the folder: {folder}\\{input_files_folder}")
+
     if (not os.path.exists(saved_output_files_folder)):
         os.mkdir(f"{saved_output_files_folder}")
 
-    for each_input_file in os.listdir(input_files_folder):
+    for each_input_file in input_files:
         newFolder = f"{saved_output_files_folder}/{each_input_file[0:len(each_input_file)-4]}"
         if (not os.path.exists(newFolder)):
             os.mkdir(newFolder)
@@ -145,7 +150,7 @@ if not no_checking_output:
         })
         console.print(f"Compiling file {each_submission}")
         if (submission.compile()):
-            for each_input_file in os.listdir(input_files_folder):
+            for each_input_file in input_files:
                 ip_file = f'{input_files_folder}/{each_input_file}'
                 submission.setInputFile(ip_file)
                 op_file = f"{saved_output_files_folder}/{each_input_file[0:len(each_input_file)-4]}/{submission.file_name_without_ext}.txt"
@@ -165,7 +170,7 @@ if not no_checking_output:
                 output_matching[i][each_input_file] = possible_status.Correct if submission.check_against(
                     correct_op_file) else possible_status.Wrong
         else:
-            output_matching[i][each_input_file] = possible_status.Compile_Error
+            output_matching[i][input_files[-1]] = possible_status.Compile_Error
             cpp.dbg(f'Skipping {each_submission}')
             continue
 

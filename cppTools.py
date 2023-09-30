@@ -1,6 +1,5 @@
 import os
 import subprocess
-from timeout_decorator import timeout
 
 
 debug = False
