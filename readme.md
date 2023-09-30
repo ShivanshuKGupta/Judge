@@ -4,18 +4,21 @@ A code checker with a plagiarism detector. Currently, it only supports c and cpp
 
 ## Pre-requisites
 
-1. gcc/g++, python and npm(to enable plagiarism check [optional])
+1. python (to run the app)
+2. gcc/g++ (to compiler submission files)
+3. npm and visual studio build tools [optional] (to enable plagiarism check)
 
 ## Installation
 
-1. run install.bat file.
+1. run install_judge.bat file with admin privileges.
 
 ## How to use?
 
 1. Make a new folder say 'Lab2'.
-2. Make two new subfolders: submissions (containing the .c/.cpp files) and sample_input(containing all input files)
-3. open the command prompt in the folder 'Lab2'.
-4. type ```judge .``` to run.
+2. Make 3 new subfolders, ```submissions``` (containing the .c/.cpp files), ```sample_input``` (containing all input files) and ```sample_output`` (containing output files with the same name as the input files).
+3. having output files is optional, and is only used to enable output checking.
+4. open the command prompt in the folder 'Lab2'.
+5. type ```judge .``` to run.
 
 ## What it does?
 
