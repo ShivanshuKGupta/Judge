@@ -1,4 +1,5 @@
 import os
+import re
 import subprocess
 
 
@@ -27,6 +28,10 @@ class srcFile:
             self.file_name_without_ext = self.file_name[0:len(
                 self.file_name)-4]
             self.ext = ".cpp"
+        elif (self.file_name[len(self.file_name)-3:len(self.file_name)].lower() == '.py'):
+            self.file_name_without_ext = self.file_name[0:len(
+                self.file_name)-3]
+            self.ext = ".py"
         else:
             raise ValueError(f"Unknown file extension: {self.file_name}")
 
@@ -41,6 +46,8 @@ class srcFile:
                 if (os.system(f"cd \"{self.folder}\" && g++ \"{self.file_name}\" -o \"{self.file_name_without_ext}\" >nul 2>&1") != 0):
                     showErr("C++ File Compilation Failed!")
                     return False
+            elif (self.ext == '.py'):
+                pass
             return True
         except:
             return False
@@ -57,6 +64,7 @@ class srcFile:
             output_file = open(self.output_file, "wb")
             input_file = open(self.input_file, 'r')
             subprocess.run(
+                f"python -u {self.folder}\\{self.file_name}" if (self.ext == '.py') else
                 f"{self.folder}\\{self.file_name_without_ext}.exe",
                 stdin=input_file,
                 stdout=output_file,
@@ -79,23 +87,12 @@ class srcFile:
 
     @classmethod
     def compare_outputs(cls, str1: str, str2: str) -> bool:
-        str1 = str1.replace('\n', '').split(' ')
-        str2 = str2.replace('\n', '').split(' ')
-        i = 0
-        j = 0
-        n = len(str1)
-        m = len(str2)
-        while (i < n and j < m):
-            while (i < n and len(str1[i]) == 0):
-                i += 1
-            while (j < m and len(str2[j]) == 0):
-                j += 1
-            if ((n-i) ^ (m-j)):
+        str2 = str2.replace('\n', ' ')
+        str2 = re.sub(' +', ' ', str2)
+        str2_words = str2.split(' ')
+        for word in str2_words:
+            if str1.count(word) < str2.count(word):
                 return False
-            if (str1[i] != str2[j]):
-                return False
-            i += 1
-            j += 1
         return True
 
     def check_against(self, correct_output_file_path: str) -> bool:

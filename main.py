@@ -177,13 +177,23 @@ if not no_checking_output:
     cpp.dbg(f"{output_matching=}")
     csv_filename = folder+'/submission_status.csv'
     console.print(f"Saving submissions to '{csv_filename}'")
-    with open(csv_filename, 'w', newline='') as csvfile:
-        fieldnames = ['file_name']
-        fieldnames += os.listdir(f"{folder}/{input_files_folder}")
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(output_matching)
+    while True:
+        try:
+            with open(csv_filename, 'w', newline='') as csvfile:
+                fieldnames = ['file_name']
+                fieldnames += os.listdir(f"{folder}/{input_files_folder}")
+                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                writer.writeheader()
+                writer.writerows(output_matching)
+        except:
+            print(f"Error writing to file '{csv_filename}'")
+            res = input("Do you want to retry? (y/n):")
+            if (len(res) == 0 or res.lower().find('y') != -1):
+                continue
+        break
+
     print(f'Successful')
+    os.system(f"start {csv_filename}")
 
     # TODO: Make copies based on input files and whether they matched output or not
 
