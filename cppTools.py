@@ -86,12 +86,12 @@ class srcFile:
                     f"Something went wrong while deleting the file: {self.folder}\\{self.file_name_without_ext}.exe")
 
     @classmethod
-    def compare_outputs(cls, str1: str, str2: str) -> bool:
-        str2 = str2.replace('\n', ' ')
-        str2 = re.sub(' +', ' ', str2)
-        str2_words = str2.split(' ')
-        for word in str2_words:
-            if str1.count(word) < str2.count(word):
+    def compare_outputs(cls, output_generated: str, correct_output: str) -> bool:
+        correct_output = correct_output.replace('\n', ' ')
+        correct_output = re.sub(' +', ' ', correct_output)
+        correct_output_words = correct_output.split(' ')
+        for word in correct_output_words:
+            if output_generated.count(word) < correct_output.count(word):
                 return False
         return True
 
