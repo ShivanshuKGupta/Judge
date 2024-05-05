@@ -2,23 +2,26 @@
 
 A cli tool for code checking with a plagiarism detector. Currently, it only supports c, cpp and python files, but can be easily extended to allow checking for multiple types.
 
-## Pre-requisites
-
-1. python (to run the app)
-2. gcc/g++ (to compile C/C++ submission files)
-3. npm and visual studio build tools [optional] (to enable plagiarism check)
-
 ## Installation
 
-1. run install_judge.bat file with admin privileges.
+### Windows
+
+1. Run `install_judge.bat` file with admin privileges.
+2. In case of issues, you may follow the below instructions for any operating system, as they can also be used for Windows.
+
+### Any Operating System
+
+1. Install `Python` if not done yet.
+2. [Optional] If you want to check for C/C++ codes as well, then install `gcc`.
+3. [Optional] If you want to use plagiarism checking then install `dolos` (https://dolos.ugent.be/docs/installation.html)
 
 ## How to use?
 
-1. Make a new folder say 'Lab2'.
-2. Make 3 new subfolders, ```submissions``` (containing the .c/.cpp files), ```sample_input``` (containing all input files) and ```sample_output``` (containing output files with the same name as the input files).
-3. having output files is optional, and is only used to enable output checking.
-4. open the command prompt in the folder 'Lab2'.
-5. type ```judge .``` to run.
+1. Make a new folder say `Test`.
+2. Make 3 new subfolders, `submissions` (containing the .c/.cpp files), `sample_input` (containing all input files) and `sample_output` (containing output files with the same name as the input files).
+3. Having output files is optional, and is only used to enable output checking.
+4. Open the command prompt in the folder `Test`.
+5. Type ```judge .``` to run.
 
 ## What it does?
 
