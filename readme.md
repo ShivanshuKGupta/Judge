@@ -1,11 +1,11 @@
-# Submission Checker
+# Judge
 
-A code checker with a plagiarism detector. Currently, it only supports c, cpp and python files.
+A cli tool for code checking with a plagiarism detector. Currently, it only supports c, cpp and python files, but can be easily extended to allow checking for multiple types.
 
 ## Pre-requisites
 
 1. python (to run the app)
-2. gcc/g++ (to compiler submission files)
+2. gcc/g++ (to compile C/C++ submission files)
 3. npm and visual studio build tools [optional] (to enable plagiarism check)
 
 ## Installation
